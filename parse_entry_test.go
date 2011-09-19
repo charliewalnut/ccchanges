@@ -16,11 +16,19 @@ func parseAndTestEntry(t *testing.T, expected Change, entry string) {
     checkEqual(t, c.committer, expected.committer, "committer");
     checkEqual(t, c.author, expected.author, "author")
     checkEqual(t, c.reviewer, expected.reviewer, "reviewer")
+    if c.rollout != expected.rollout {
+        t.Errorf("expected %v but got %v for rollout", c.rollout, expected.rollout)
+    }
 }
 
+// Some handy names for test cases
+const mihai = "Mihai Parparita"
+const darin = "Darin Adler"
+const mitz = "Dan Bernstein"
+const rniwa = "Ryosuke Niwa"
+const sheriffBot = "Sheriff Bot"
+
 func TestSimple(t *testing.T) {
-    mihai := "Mihai Parparita"
-    darin := "Darin Adler"
     expected := Change{committer: mihai, author: mihai, reviewer: darin}
     parseAndTestEntry(t, expected, `2011-09-17  Mihai Parparita  <mihaip@chromium.org>
 
@@ -45,13 +53,28 @@ func TestSimple(t *testing.T) {
 }
 
 func TestUnreviewed(t *testing.T) {
-    mitz := "Dan Bernstein"
     expected := Change{committer: mitz, author: mitz}
     parseAndTestEntry(t, expected, `2011-09-18  Dan Bernstein  <mitz@apple.com>
 
         Try to fix the Chromium Mac build after r95391.
 
         * WebCore.gyp/WebCore.gyp:
+
+`)
+}
+
+func TestRollout(t *testing.T) {
+    expected := Change{committer: sheriffBot, author: sheriffBot, rollout: true}
+    parseAndTestEntry(t, expected, `2011-09-16  Sheriff Bot  <webkit.review.bot@gmail.com>
+
+        Unreviewed, rolling out r95304.
+        http://trac.webkit.org/changeset/95304
+        https://bugs.webkit.org/show_bug.cgi?id=68299
+
+        Broke GTK+ builds. It pulls derived headers into main.c
+        (Requested by rniwa on #webkit).
+
+        * bindings/scripts/CodeGeneratorGObject.pm:
 
 `)
 }
