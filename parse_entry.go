@@ -2,7 +2,6 @@ package ccchanges
 
 import (
     "exp/regexp" // Using perl character classes \d and \s
-    "strings"
 )
 
 type Change struct {
@@ -12,14 +11,15 @@ type Change struct {
 }
 
 // Adapted from webkitpy/common/checkout/changelog.py
-var dateLineRE = regexp.MustCompile(`^20\d{2}-\d{2}-\d{2}\s+(.+?)\s+<[^<>]+>$`)
+// This regexp is also useful for telling entries apart
+var DateLineRE = regexp.MustCompile(`^20\d{2}-\d{2}-\d{2}\s+(.+?)\s+<[^<>]+>$`)
 var reviewerRE = regexp.MustCompile(`Reviewed by (.*?)[\.]`)
 
 var rolloutRE = regexp.MustCompile(`Unreviewed, rolling out r(\d+)[\.]`)
 var pathRE = regexp.MustCompile(`\* ([\w/\.]+):`)
 
 func parseCommitter(line string) string {
-    submatches := dateLineRE.FindStringSubmatch(line)
+    submatches := DateLineRE.FindStringSubmatch(line)
     if submatches == nil {
         return ""
     }
@@ -57,13 +57,12 @@ func parsePaths(lines []string) []string {
     return paths
 }
 
-func ParseEntry(entry string) Change {
+func ParseEntry(entry []string) Change {
     c := Change{}
-    lines := strings.Split(entry, "\n")
-    c.committer = parseCommitter(lines[0])
+    c.committer = parseCommitter(entry[0])
     c.author = c.committer
-    c.reviewer = parseReviewer(lines[1:])
-    c.rollout = parseRollout(lines[1:])
-    c.paths = parsePaths(lines[1:])
+    c.reviewer = parseReviewer(entry[1:])
+    c.rollout = parseRollout(entry[1:])
+    c.paths = parsePaths(entry[1:])
     return c
 }

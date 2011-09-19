@@ -2,6 +2,7 @@ package ccchanges
 
 import (
     "testing"
+    "strings"
 )
 
 func checkEqual(t *testing.T, expected, actual, field string) {
@@ -23,7 +24,7 @@ func comparePaths(expected, actual []string) bool {
 }
 
 func parseAndTestEntry(t *testing.T, expected Change, entry string) {
-    c := ParseEntry(entry)
+    c := ParseEntry(strings.Split(entry, "\n"))
 
     checkEqual(t, expected.committer, c.committer, "committer");
     checkEqual(t, expected.author, c.author, "author")
