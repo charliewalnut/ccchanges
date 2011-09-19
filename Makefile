@@ -1,7 +1,8 @@
 include $(GOROOT)/src/Make.inc
 
-TARG=jamesr/ccchanges
+TARG=bin/ccchanges
 GOFILES=\
 	parse_entry.go\
+	main.go\
 
-include $(GOROOT)/src/Make.pkg
+include $(GOROOT)/src/Make.cmd

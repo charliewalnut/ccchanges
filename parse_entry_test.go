@@ -1,4 +1,4 @@
-package ccchanges
+package main
 
 import (
     "testing"

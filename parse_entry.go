@@ -1,4 +1,4 @@
-package ccchanges
+package main
 
 import (
     "exp/regexp" // Using perl character classes \d and \s
