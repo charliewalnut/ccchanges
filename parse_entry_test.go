@@ -44,3 +44,15 @@ func TestSimple(t *testing.T) {
 `)
 }
 
+func TestUnreviewed(t *testing.T) {
+    mitz := "Dan Bernstein"
+    expected := Change{committer: mitz, author: mitz}
+    parseAndTestEntry(t, expected, `2011-09-18  Dan Bernstein  <mitz@apple.com>
+
+        Try to fix the Chromium Mac build after r95391.
+
+        * WebCore.gyp/WebCore.gyp:
+
+`)
+}
+
