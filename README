@@ -1,0 +1,8 @@
+Utility for extracting statistics from WebKit ChangeLogs.
+
+To use, build ccchanges and run it thusly:
+./ccchanges < /path/to/ChangeLog
+
+By default it prints out a count of commits and reviews for every change found in the ChangeLog. These counts can be restricted in various ways, see --help for details.
+
+I didn't know go at all when starting on this project and still don't, so there's quite a bit of ugliness.
