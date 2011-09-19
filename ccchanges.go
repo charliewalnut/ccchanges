@@ -23,6 +23,7 @@ func (b *bufIOReaderLineGetter) GetLine() (string, os.Error, bool) {
 var path = flag.String("path", "", "path regexp filter to use")
 var committer = flag.String("committer", "", "committer regexp filter to use")
 var reviewer = flag.String("reviewer", "", "reviewer regexp filter to use")
+var reviewed = flag.Bool("reviewed", false, "reviewed patches only")
 
 func ezMatch(pattern, s string) bool {
     m, _ := regexp.MatchString(pattern, s)
@@ -34,14 +35,19 @@ func matchesFilter(change Change) bool {
     for i := 0; !pathMatch && i < len(change.paths); i++ {
         pathMatch = ezMatch(*path, change.paths[i])
     }
-    return pathMatch && ezMatch(*committer, change.committer) && ezMatch(*reviewer, change.reviewer)
+    if !pathMatch {
+        return false
+    }
+    if *reviewed && change.reviewer == "" {
+        return false
+    }
+    return ezMatch(*committer, change.committer) && ezMatch(*reviewer, change.reviewer)
 }
 
 func main() {
     flag.Parse()
     lg := &bufIOReaderLineGetter{bufio.NewReader(os.Stdin)}
     changes := parseLog(lg)
-    fmt.Printf("parsed %d changes\n", len(changes))
     commits := make(map[string] int)
     reviews := make(map[string] int)
     for _, change := range changes {
