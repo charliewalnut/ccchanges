@@ -10,14 +10,29 @@ func checkEqual(t *testing.T, expected, actual, field string) {
     }
 }
 
+func comparePaths(expected, actual []string) bool {
+    if len(actual) != len(expected) {
+        return false
+    }
+    for i, a := range actual {
+        if expected[i] != a {
+            return false
+        }
+    }
+    return true
+}
+
 func parseAndTestEntry(t *testing.T, expected Change, entry string) {
     c := ParseEntry(entry)
 
-    checkEqual(t, c.committer, expected.committer, "committer");
-    checkEqual(t, c.author, expected.author, "author")
-    checkEqual(t, c.reviewer, expected.reviewer, "reviewer")
+    checkEqual(t, expected.committer, c.committer, "committer");
+    checkEqual(t, expected.author, c.author, "author")
+    checkEqual(t, expected.reviewer, c.reviewer, "reviewer")
+    if !comparePaths(expected.paths, c.paths) {
+        t.Errorf("expected %v but got %v for paths", expected.paths, c.paths)
+    }
     if c.rollout != expected.rollout {
-        t.Errorf("expected %v but got %v for rollout", c.rollout, expected.rollout)
+        t.Errorf("expected %v but got %v for rollout", expected.rollout, c.rollout)
     }
 }
 
@@ -29,7 +44,8 @@ const rniwa = "Ryosuke Niwa"
 const sheriffBot = "Sheriff Bot"
 
 func TestSimple(t *testing.T) {
-    expected := Change{committer: mihai, author: mihai, reviewer: darin}
+    paths := []string{"history/BackForwardListImpl.cpp", "loader/EmptyClients.h", "loader/FrameLoaderClient.h"}
+    expected := Change{committer: mihai, author: mihai, reviewer: darin, paths: paths}
     parseAndTestEntry(t, expected, `2011-09-17  Mihai Parparita  <mihaip@chromium.org>
 
         FrameLoaderClient BackForwardList-related methods are unsued
@@ -53,7 +69,8 @@ func TestSimple(t *testing.T) {
 }
 
 func TestUnreviewed(t *testing.T) {
-    expected := Change{committer: mitz, author: mitz}
+    paths := []string{"WebCore.gyp/WebCore.gyp"}
+    expected := Change{committer: mitz, author: mitz, paths: paths}
     parseAndTestEntry(t, expected, `2011-09-18  Dan Bernstein  <mitz@apple.com>
 
         Try to fix the Chromium Mac build after r95391.
@@ -64,7 +81,8 @@ func TestUnreviewed(t *testing.T) {
 }
 
 func TestRollout(t *testing.T) {
-    expected := Change{committer: sheriffBot, author: sheriffBot, rollout: true}
+    paths := []string{"bindings/scripts/CodeGeneratorGObject.pm"}
+    expected := Change{committer: sheriffBot, author: sheriffBot, rollout: true, paths: paths}
     parseAndTestEntry(t, expected, `2011-09-16  Sheriff Bot  <webkit.review.bot@gmail.com>
 
         Unreviewed, rolling out r95304.
