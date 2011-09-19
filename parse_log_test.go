@@ -1,6 +1,7 @@
 package main
 
 import (
+    "os"
     "strings"
     "testing"
 )
@@ -146,8 +147,23 @@ var testLog = []string{`2011-09-18  Dan Bernstein  <mitz@apple.com>
 
 `}
 
+type sliceLineGetter struct {
+    lines []string
+    i int
+}
+
+func (slg *sliceLineGetter) GetLine() (string, os.Error, bool) {
+    if slg.i == len(slg.lines) {
+        return "", os.EOF, false
+    }
+    i := slg.i
+    slg.i++
+    return slg.lines[i], nil, dateLineRE.MatchString(slg.lines[i])
+
+}
+
 func TestParseLog(t *testing.T) {
-    entries := parseLog(strings.Join(testLog, "\n"))
+    entries := parseLog(&sliceLineGetter{strings.Split(strings.Join(testLog, "\n"), "\n"), 0})
     if len(entries) != len(testLog) {
         t.Errorf("expected %d entries but got %d", len(testLog), len(entries))
     }

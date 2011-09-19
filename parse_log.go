@@ -1,18 +1,23 @@
 package main
 
 import (
-    "strings"
+    "os"
 )
 
-func parseLog(log string) []Change {
-    lines := strings.Split(log, "\n")
-    i := 0
+type LineGetter interface {
+    GetLine() (string, os.Error, bool)
+}
+
+func parseLog(lineGetter LineGetter) []Change {
     changes := make([]Change, 0)
-    for i < len(lines) {
+    line, err, dateline := lineGetter.GetLine()
+    for err == nil {
         entry := make([]string, 0)
-        entry = append(entry, lines[i])
-        for i++; i < len(lines) && !dateLineRE.MatchString(lines[i]); i++ {
-            entry = append(entry, lines[i])
+        entry = append(entry, line)
+        for line, err, dateline = lineGetter.GetLine();
+            err == nil && !dateline;
+            line, err, dateline = lineGetter.GetLine() {
+            entry = append(entry, line)
         }
         changes = append(changes, parseEntry(entry))
     }
