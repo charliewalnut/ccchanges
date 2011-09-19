@@ -5,35 +5,31 @@ import (
     "strings"
 )
 
-type Person struct {
-    name, email string
-}
-
 type Change struct {
-    author, reviewer, committer Person
+    author, reviewer, committer string
     rollout bool
 }
 
 // Adapted from webkitpy/common/checkout/changelog.py
-var dateLineRE = regexp.MustCompile(`^20\d{2}-\d{2}-\d{2}\s+(.+?)\s+<([^<>]+)>$`)
+var dateLineRE = regexp.MustCompile(`^20\d{2}-\d{2}-\d{2}\s+(.+?)\s+<[^<>]+>$`)
 var reviewerRE = regexp.MustCompile(`Reviewed by (.*?)[\.]`)
 
-func parseCommitter(line string) Person {
+func parseCommitter(line string) string {
     submatches := dateLineRE.FindStringSubmatch(line)
     if submatches == nil {
-        return Person{}
+        return ""
     }
-    return Person{submatches[1], submatches[2]}
+    return submatches[1]
 }
 
-func parseReviewer(lines []string) Person {
+func parseReviewer(lines []string) string {
     for i := 0; i < len(lines); i++ {
         submatches := reviewerRE.FindStringSubmatch(lines[i])
         if submatches != nil {
-            return Person{submatches[1], ""}
+            return submatches[1]
         }
     }
-    return Person{}
+    return ""
 }
 
 func ParseEntry(entry string) Change {
