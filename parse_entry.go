@@ -11,15 +11,14 @@ type Change struct {
 }
 
 // Adapted from webkitpy/common/checkout/changelog.py
-// This regexp is also useful for telling entries apart
-var DateLineRE = regexp.MustCompile(`^20\d{2}-\d{2}-\d{2}\s+(.+?)\s+<[^<>]+>$`)
+var dateLineRE = regexp.MustCompile(`^20\d{2}-\d{2}-\d{2}\s+(.+?)\s+<[^<>]+>$`)
 var reviewerRE = regexp.MustCompile(`Reviewed by (.*?)[\.]`)
 
 var rolloutRE = regexp.MustCompile(`Unreviewed, rolling out r(\d+)[\.]`)
 var pathRE = regexp.MustCompile(`\* ([\w/\.]+):`)
 
 func parseCommitter(line string) string {
-    submatches := DateLineRE.FindStringSubmatch(line)
+    submatches := dateLineRE.FindStringSubmatch(line)
     if submatches == nil {
         return ""
     }
@@ -57,7 +56,7 @@ func parsePaths(lines []string) []string {
     return paths
 }
 
-func ParseEntry(entry []string) Change {
+func parseEntry(entry []string) Change {
     c := Change{}
     c.committer = parseCommitter(entry[0])
     c.author = c.committer

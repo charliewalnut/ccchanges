@@ -12,8 +12,7 @@ var testLog = []string{`2011-09-18  Dan Bernstein  <mitz@apple.com>
         * platform/graphics/mac/ComplexTextControllerATSUI.cpp:
         (WebCore::ComplexTextController::collectComplexTextRunsForCharactersATSUI):
 
-`,`
-2011-09-18  Dan Bernstein  <mitz@apple.com>
+`,`2011-09-18  Dan Bernstein  <mitz@apple.com>
 
         Allow Core Text to choose the fallback font for rendering a combining character sequence
 
@@ -83,8 +82,7 @@ var testLog = []string{`2011-09-18  Dan Bernstein  <mitz@apple.com>
         (WebCore::SimpleFontData::canRenderCombiningCharacterSequence): Added. Checks if Core Text can render
         the sequence using only this font. Caches the result.
 
-`,`
-2011-09-17  Mihai Parparita  <mihaip@chromium.org>
+`,`2011-09-17  Mihai Parparita  <mihaip@chromium.org>
 
         FrameLoaderClient BackForwardList-related methods are unsued
         https://bugs.webkit.org/show_bug.cgi?id=68293
@@ -103,8 +101,7 @@ var testLog = []string{`2011-09-18  Dan Bernstein  <mitz@apple.com>
         * loader/EmptyClients.h:
         * loader/FrameLoaderClient.h:
 
-`,`
-2011-09-17  David Hyatt  <hyatt@apple.com>
+`,`2011-09-17  David Hyatt  <hyatt@apple.com>
 
         https://bugs.webkit.org/show_bug.cgi?id=68307
         
@@ -118,8 +115,7 @@ var testLog = []string{`2011-09-18  Dan Bernstein  <mitz@apple.com>
         * css/CSSBorderImageValue.cpp:
         (WebCore::CSSBorderImageValue::cssText):
 
-`,`
-2011-09-17  Aaron Boodman  <aa@chromium.org>
+`,`2011-09-17  Aaron Boodman  <aa@chromium.org>
 
         Rework script context creation/release notifications
         https://bugs.webkit.org/show_bug.cgi?id=67828
@@ -138,8 +134,7 @@ var testLog = []string{`2011-09-18  Dan Bernstein  <mitz@apple.com>
         (WebCore::EmptyFrameLoaderClient::willReleaseScriptContext):
         * loader/FrameLoaderClient.h:
 
-`,`
-2011-09-17  Ilya Tikhonovsky  <loislo@chromium.org>
+`,`2011-09-17  Ilya Tikhonovsky  <loislo@chromium.org>
 
         Web Inspector: file open dialog appears when user clicks on the timeline bar in timeline panel.
         https://bugs.webkit.org/show_bug.cgi?id=68312

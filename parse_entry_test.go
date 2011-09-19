@@ -24,16 +24,18 @@ func comparePaths(expected, actual []string) bool {
 }
 
 func parseAndTestEntry(t *testing.T, expected Change, entry string) {
-    c := ParseEntry(strings.Split(entry, "\n"))
+    testEntry(t, expected, parseEntry(strings.Split(entry, "\n")))
+}
 
-    checkEqual(t, expected.committer, c.committer, "committer");
-    checkEqual(t, expected.author, c.author, "author")
-    checkEqual(t, expected.reviewer, c.reviewer, "reviewer")
-    if !comparePaths(expected.paths, c.paths) {
-        t.Errorf("expected %v but got %v for paths", expected.paths, c.paths)
+func testEntry(t *testing.T, expected, actual Change) {
+    checkEqual(t, expected.committer, actual.committer, "committer");
+    checkEqual(t, expected.author, actual.author, "author")
+    checkEqual(t, expected.reviewer, actual.reviewer, "reviewer")
+    if !comparePaths(expected.paths, actual.paths) {
+        t.Errorf("expected %v but got %v for paths", expected.paths, actual.paths)
     }
-    if c.rollout != expected.rollout {
-        t.Errorf("expected %v but got %v for rollout", expected.rollout, c.rollout)
+    if actual.rollout != expected.rollout {
+        t.Errorf("expected %v but got %v for rollout", expected.rollout, actual.rollout)
     }
 }
 
