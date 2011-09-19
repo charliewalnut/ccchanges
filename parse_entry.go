@@ -40,6 +40,7 @@ func ParseEntry(entry string) Change {
     c := Change{}
     lines := strings.Split(entry, "\n")
     c.committer = parseCommitter(lines[0])
+    c.author = c.committer
     c.reviewer = parseReviewer(lines[1:])
     return c
 }
