@@ -162,8 +162,15 @@ func (slg *sliceLineGetter) GetLine() (string, os.Error, bool) {
 
 }
 
+type nothing struct {
+}
+
+func (n *nothing) Matches(c *Change) bool {
+    return true
+}
+
 func TestParseLog(t *testing.T) {
-    entries := parseLog(&sliceLineGetter{strings.Split(strings.Join(testLog, "\n"), "\n"), 0})
+    entries := parseLog(&sliceLineGetter{strings.Split(strings.Join(testLog, "\n"), "\n"), 0}, &nothing{})
     if len(entries) != len(testLog) {
         t.Errorf("expected %d entries but got %d", len(testLog), len(entries))
     }

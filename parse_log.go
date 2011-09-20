@@ -8,7 +8,11 @@ type LineGetter interface {
     GetLine() (string, os.Error, bool)
 }
 
-func parseLog(lineGetter LineGetter) []Change {
+type ChangeFilter interface {
+    Matches(c *Change) bool
+}
+
+func parseLog(lineGetter LineGetter, filter ChangeFilter) []Change {
     changes := make([]Change, 0)
     line, err, dateline := lineGetter.GetLine()
     for err == nil {
@@ -19,7 +23,10 @@ func parseLog(lineGetter LineGetter) []Change {
             line, err, dateline = lineGetter.GetLine() {
             entry = append(entry, line)
         }
-        changes = append(changes, parseEntry(entry))
+        parsedEntry := parseEntry(entry)
+        if filter.Matches(&parsedEntry) {
+            changes = append(changes, parseEntry(entry))
+        }
     }
     return changes
 }

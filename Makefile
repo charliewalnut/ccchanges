@@ -1,6 +1,6 @@
 include $(GOROOT)/src/Make.inc
 
-TARG=bin/ccchanges
+TARG=ccchanges
 GOFILES=\
 	parse_entry.go\
 	parse_log.go\
