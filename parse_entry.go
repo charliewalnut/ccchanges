@@ -2,27 +2,30 @@ package main
 
 import (
     "exp/regexp" // Using perl character classes \d and \s
+    "time"
 )
 
 type Change struct {
     author, reviewer, committer string
     paths []string
     rollout bool
+    date *time.Time
 }
 
 // Adapted from webkitpy/common/checkout/changelog.py
-var dateLineRE = regexp.MustCompile(`^20\d{2}-\d{2}-\d{2}\s+(.+?)\s+<[^<>]+>$`)
+var dateLineRE = regexp.MustCompile(`^(20\d{2}-\d{2}-\d{2})\s+(.+?)\s+<[^<>]+>$`)
 var reviewerRE = regexp.MustCompile(`Reviewed by (.*?)[\.]`)
 
 var rolloutRE = regexp.MustCompile(`Unreviewed, rolling out r(\d+)[\.]`)
 var pathRE = regexp.MustCompile(`\* ([\w/\.]+):`)
 
-func parseCommitter(line string) string {
+func parseDateAndCommitter(line string) (*time.Time, string) {
     submatches := dateLineRE.FindStringSubmatch(line)
     if submatches == nil {
-        return ""
+        return nil, ""
     }
-    return submatches[1]
+    t, _ := time.Parse("2006-01-02", submatches[1])
+    return t, submatches[2]
 }
 
 func parseReviewer(lines []string) string {
@@ -58,7 +61,7 @@ func parsePaths(lines []string) []string {
 
 func parseEntry(entry []string) Change {
     c := Change{}
-    c.committer = parseCommitter(entry[0])
+    c.date, c.committer = parseDateAndCommitter(entry[0])
     c.author = c.committer
     c.reviewer = parseReviewer(entry[1:])
     c.rollout = parseRollout(entry[1:])

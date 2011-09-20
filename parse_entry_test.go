@@ -2,6 +2,7 @@ package main
 
 import (
     "testing"
+    "time"
     "strings"
 )
 
@@ -37,6 +38,9 @@ func testEntry(t *testing.T, expected, actual Change) {
     if actual.rollout != expected.rollout {
         t.Errorf("expected %v but got %v for rollout", expected.rollout, actual.rollout)
     }
+    if actual.date.Seconds() != expected.date.Seconds() {
+        t.Errorf("expected %v but got %v for date", expected.date, actual.date)
+    }
 }
 
 // Some handy names for test cases
@@ -48,7 +52,8 @@ const sheriffBot = "Sheriff Bot"
 
 func TestSimple(t *testing.T) {
     paths := []string{"history/BackForwardListImpl.cpp", "loader/EmptyClients.h", "loader/FrameLoaderClient.h"}
-    expected := Change{committer: mihai, author: mihai, reviewer: darin, paths: paths}
+    date, _ := time.Parse("2006-01-02", "2011-09-17")
+    expected := Change{committer: mihai, author: mihai, reviewer: darin, paths: paths, date: date}
     parseAndTestEntry(t, expected, `2011-09-17  Mihai Parparita  <mihaip@chromium.org>
 
         FrameLoaderClient BackForwardList-related methods are unsued
@@ -73,7 +78,8 @@ func TestSimple(t *testing.T) {
 
 func TestUnreviewed(t *testing.T) {
     paths := []string{"WebCore.gyp/WebCore.gyp"}
-    expected := Change{committer: mitz, author: mitz, paths: paths}
+    date, _ := time.Parse("2006-01-02", "2011-09-18")
+    expected := Change{committer: mitz, author: mitz, paths: paths, date: date}
     parseAndTestEntry(t, expected, `2011-09-18  Dan Bernstein  <mitz@apple.com>
 
         Try to fix the Chromium Mac build after r95391.
@@ -85,7 +91,8 @@ func TestUnreviewed(t *testing.T) {
 
 func TestRollout(t *testing.T) {
     paths := []string{"bindings/scripts/CodeGeneratorGObject.pm"}
-    expected := Change{committer: sheriffBot, author: sheriffBot, rollout: true, paths: paths}
+    date, _ := time.Parse("2006-01-02", "2011-09-16")
+    expected := Change{committer: sheriffBot, author: sheriffBot, rollout: true, paths: paths, date: date}
     parseAndTestEntry(t, expected, `2011-09-16  Sheriff Bot  <webkit.review.bot@gmail.com>
 
         Unreviewed, rolling out r95304.
